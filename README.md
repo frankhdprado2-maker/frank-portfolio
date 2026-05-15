@@ -1,6 +1,6 @@
 # Portafolio de Frank Cristian Prado Ccopa
 
-Sitio web personal creado con Next.js, TypeScript, Tailwind CSS, Prisma, PostgreSQL y GitHub OAuth con Auth.js. Está pensado como portafolio profesional para clientes de Freelancer, con una página principal, una vista pública de proyectos y un panel protegido para administrar proyectos.
+Sitio web personal creado con Next.js, TypeScript, Tailwind CSS, Prisma, PostgreSQL y GitHub OAuth con Auth.js. Está pensado como portafolio profesional para clientes, con una página principal, una vista pública de proyectos y un panel protegido para administrar proyectos.
 
 ## Tecnologías
 
