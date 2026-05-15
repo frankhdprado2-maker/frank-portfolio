@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Project } from "@prisma/client";
 import { auth, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createProject, deleteProject, updateProject } from "./actions";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 const statusOptions = ["Demo", "En desarrollo", "Completado"];
 
-async function getProjects() {
+async function getProjects(): Promise<Project[]> {
   return prisma.project.findMany({
     orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
   });
@@ -23,21 +24,7 @@ async function closeSession() {
 type ProjectFormProps = {
   action: (formData: FormData) => Promise<void>;
   buttonLabel: string;
-  project?: {
-    id: string;
-    title: string;
-    slug: string;
-    category: string;
-    shortDescription: string;
-    description: string;
-    technologies: string[];
-    features: string[];
-    status: string;
-    imageUrl: string;
-    githubUrl: string;
-    demoUrl: string;
-    featured: boolean;
-  };
+  project?: Project;
 };
 
 function ProjectForm({ action, buttonLabel, project }: ProjectFormProps) {
@@ -233,7 +220,7 @@ export default async function AdminProjectsPage() {
     );
   }
 
-  const projects = await getProjects();
+  const projects: Project[] = await getProjects();
 
   return (
     <main className="min-h-screen px-5 py-8 sm:px-8">
@@ -304,7 +291,7 @@ export default async function AdminProjectsPage() {
           </div>
 
           <div className="grid gap-6">
-            {projects.map((project) => (
+            {projects.map((project: Project) => (
               <article
                 key={project.id}
                 className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
