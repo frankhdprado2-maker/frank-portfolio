@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import type { Project } from "@prisma/client";
 import { auth, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createProject, deleteProject, updateProject } from "./actions";
@@ -9,7 +8,25 @@ export const dynamic = "force-dynamic";
 
 const statusOptions = ["Demo", "En desarrollo", "Completado"];
 
-async function getProjects(): Promise<Project[]> {
+type AdminProject = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  shortDescription: string;
+  description: string;
+  technologies: string[];
+  features: string[];
+  status: string;
+  imageUrl: string | null;
+  githubUrl: string | null;
+  demoUrl: string | null;
+  featured: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+async function getProjects(): Promise<AdminProject[]> {
   return prisma.project.findMany({
     orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
   });
@@ -24,7 +41,7 @@ async function closeSession() {
 type ProjectFormProps = {
   action: (formData: FormData) => Promise<void>;
   buttonLabel: string;
-  project?: Project;
+  project?: AdminProject;
 };
 
 function ProjectForm({ action, buttonLabel, project }: ProjectFormProps) {
@@ -130,7 +147,7 @@ function ProjectForm({ action, buttonLabel, project }: ProjectFormProps) {
           Imagen o mockup
           <input
             name="imageUrl"
-            defaultValue={project?.imageUrl}
+            defaultValue={project?.imageUrl ?? ""}
             placeholder="https://..."
             className="rounded-2xl border border-slate-200 bg-white px-4 py-3 font-medium outline-none transition focus:border-ocean"
           />
@@ -220,7 +237,7 @@ export default async function AdminProjectsPage() {
     );
   }
 
-  const projects: Project[] = await getProjects();
+  const projects: AdminProject[] = await getProjects();
 
   return (
     <main className="min-h-screen px-5 py-8 sm:px-8">
@@ -291,7 +308,7 @@ export default async function AdminProjectsPage() {
           </div>
 
           <div className="grid gap-6">
-            {projects.map((project: Project) => (
+            {projects.map((project: AdminProject) => (
               <article
                 key={project.id}
                 className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
